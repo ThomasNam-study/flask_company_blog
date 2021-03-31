@@ -2,10 +2,17 @@
 {% block content %}
 
     <form method="post">
+
         {{ form.hidden_tag() }}
-        {{ form.email.label }} {{ form.email }}<br>
-        {{ form.password.label }} {{ form.password }}<br>
-        {{ form.submit() }}
+        <div class="form-group">
+            {{ form.email.label(class='form-group') }} {{ form.email(class='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label(class='form-group') }} {{ form.password(class='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
     </form>
 
 {% endblock %}

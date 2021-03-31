@@ -27,25 +27,28 @@
         <a href="#">About</a>
     </li>
 
-    <li class="nav-link">
-        <a href="#">Log out</a>
-    </li>
+    {% if current_user.is_authenticated %}
+        <li class="nav-link">
+            <a href="{{ url_for('users.logout') }}">Log out</a>
+        </li>
 
-    <li class="nav-link">
-        <a href="#">Account</a>
-    </li>
+        <li class="nav-link">
+            <a href="{{ url_for('users.account') }}">Account</a>
+        </li>
 
-    <li class="nav-link">
-        <a href="#">Create Post</a>
-    </li>
+        <li class="nav-link">
+            <a href="#">Create Post</a>
+        </li>
+    {% else %}
 
-    <li class="nav-link">
-        <a href="#">Log in</a>
-    </li>
+        <li class="nav-link">
+            <a href="{{ url_for('users.login') }}">Log in</a>
+        </li>
 
-    <li class="nav-link">
-        <a href="#">Register</a>
-    </li>
+        <li class="nav-link">
+            <a href="{{ url_for('users.register') }}">Register</a>
+        </li>
+    {% endif %}
 </ul>
 
 {% for mess in get_flashed_messages() %}
