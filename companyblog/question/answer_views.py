@@ -1,22 +1,30 @@
 from datetime import datetime
 
-from flask import Blueprint, request, redirect, url_for
+from flask import Blueprint, request, redirect, url_for, render_template
 
 from companyblog import db
 from companyblog.models import Question, Answer
+from companyblog.question.forms import AnswerForm
 
 answer = Blueprint('answer', __name__)
 
 
 @answer.route('/create/<int:question_id>', methods=("POST",))
 def create(question_id):
+
+    form = AnswerForm()
+
     q = Question.query.get_or_404(question_id)
 
-    content = request.form['content']
+    if form.validate_on_submit():
 
-    a = Answer(content=content, create_date=datetime.now())
+        content = form.content.data
 
-    q.answer_set.append(a)
-    db.session.commit()
+        a = Answer(content=content, create_date=datetime.now())
 
-    return redirect(url_for('question.detail', question_id=question_id))
+        q.answer_set.append(a)
+        db.session.commit()
+
+        return redirect(url_for('question.detail', question_id=question_id))
+
+    return render_template('question/question_detail.html', question=q, form=form)

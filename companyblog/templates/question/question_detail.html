@@ -41,6 +41,13 @@
         {% endfor %}
 
         <form action="{{ url_for('answer.create', question_id=question.id) }}" method="post" class="my-3">
+            {{ form.csrf_token }}
+            {% for field, errors in form.errors.items() %}
+                <div class="alert alert-danger" role="alert">
+                    <strong>{{ form[field].label }}</strong>: {{ ', '.join(errors) }}
+                </div>
+            {% endfor %}
+
             <div class="form-group">
                 <textarea class="form-control" name="content" id="content" cols="30" rows="15"></textarea>
             </div>
