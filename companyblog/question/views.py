@@ -11,7 +11,11 @@ question = Blueprint('question', __name__)
 
 @question.route('/')
 def index():
+
+    page = request.args.get('page', type=int, default=1)
+
     q_list = Question.query.order_by(Question.create_date.desc())
+    q_list = q_list.paginate(page, per_page=10)
 
     return render_template('question/question_list.html', q_list=q_list)
 

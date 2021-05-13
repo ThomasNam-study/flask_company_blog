@@ -33,6 +33,9 @@ from companyblog.users.views import users
 from companyblog.blog_posts.views import blog_posts
 from companyblog.question.views import question
 from companyblog.question.answer_views import answer
+from companyblog.question.filter import format_datetime
+
+app.jinja_env.filters['datetime'] = format_datetime
 
 app.register_blueprint(core)
 app.register_blueprint(error_pages)

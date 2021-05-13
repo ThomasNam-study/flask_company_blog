@@ -7,11 +7,7 @@
 
         <form method="post" class="post-form my-3">
             {{ form.csrf_token }}
-            {% for field, errors in form.errors.items() %}
-                <div class="alert alert-danger" role="alert">
-                    <strong>{{ form[field].label }}</strong>: {{ ', '.join(errors) }}
-                </div>
-            {% endfor %}
+            {% include "form_errors.html" %}
 
             <div class="form-group">
                 {{ form.subject.label }}
