@@ -7,22 +7,24 @@
             <thead>
             <tr class="thead-dark">
                 <th>번호</th>
-                <th>제목</th>
+                <th width="50%">제목</th>
+                <th>작성자</th>
                 <th>작성일시</th>
             </tr>
             </thead>
             <tbody>
             {% if q_list.items %}
                 {% for q in q_list.items %}
-                    <tr>
+                    <tr class="text-center">
                         <td>{{ q_list.total - ((q_list.page - 1) * q_list.per_page) - loop.index0 }}</td>
-                        <td><a href="{{ url_for('question.detail', question_id=q.id) }}">{{ q.subject }}</a>
+                        <td class="text-left"><a href="{{ url_for('question.detail', question_id=q.id) }}">{{ q.subject }}</a>
 
                             {% if q.answer_set|length > 0 %}
                                 <span class="text-danger small ml-2">{{ q.answer_set|length }}</span>
                             {% endif %}
 
                         </td>
+                    <td>{{ q.user.username }}</td>
                         <td>{{ q.create_date|datetime }}</td>
                     </tr>
                 {% endfor %}

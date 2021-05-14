@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask import Blueprint, render_template, request, redirect, url_for
+from flask_login import login_required, current_user
 
 from companyblog import db
 from companyblog.models import Question
@@ -21,11 +22,12 @@ def index():
 
 
 @question.route('/create/', methods=('GET', 'POST'))
+@login_required
 def create():
     form = QuestionForm()
 
     if form.validate_on_submit():
-        q = Question(subject=form.subject.data, content=form.content.data, create_date=datetime.now())
+        q = Question(subject=form.subject.data, content=form.content.data, create_date=datetime.now(), user=current_user)
 
         db.session.add(q)
         db.session.commit()

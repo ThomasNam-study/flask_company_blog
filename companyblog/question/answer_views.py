@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask import Blueprint, request, redirect, url_for, render_template
+from flask_login import current_user, login_required
 
 from companyblog import db
 from companyblog.models import Question, Answer
@@ -10,6 +11,7 @@ answer = Blueprint('answer', __name__)
 
 
 @answer.route('/create/<int:question_id>', methods=("POST",))
+@login_required
 def create(question_id):
 
     form = AnswerForm()
@@ -20,7 +22,7 @@ def create(question_id):
 
         content = form.content.data
 
-        a = Answer(content=content, create_date=datetime.now())
+        a = Answer(content=content, create_date=datetime.now(), user=current_user)
 
         q.answer_set.append(a)
         db.session.commit()
