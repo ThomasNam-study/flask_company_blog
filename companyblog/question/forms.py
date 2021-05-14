@@ -11,3 +11,7 @@ class QuestionForm(FlaskForm):
 
 class AnswerForm(FlaskForm):
     content = TextAreaField('내용', validators=[DataRequired('내용은 필수 입니다.')])
+
+
+class CommentForm(FlaskForm):
+    content = TextAreaField('내용', validators=[DataRequired('내용은 필수 입니다.')])
