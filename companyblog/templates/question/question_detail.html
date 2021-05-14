@@ -1,5 +1,19 @@
 {% extends "base.html" %}
 
+{% block script %}
+
+    <script>
+        $(document).ready(function () {
+            $('.delete').on('click', function () {
+                if (confirm("정말로 삭제하시겠습니까?")) {
+                    location.href = $(this).data('uri');
+                }
+            });
+        });
+    </script>
+
+{% endblock %}
+
 {% block content %}
 
     <div class="container my-3">
@@ -13,14 +27,30 @@
                 </div>
 
                 <div class="d-flex justify-content-end">
+
+                    {% if question.modify_date %}
+                        <div class="badge badge-light p-2 text-left mx-3">
+                            <div class="mb-2">modified at</div>
+                            <div>{{ question.modify_date|datetime }}</div>
+                        </div>
+                    {% endif %}
                     <div class="badge badge-light p-2 text-left">
                         <div class="mb-2">{{ question.user.username }}</div>
                         <div>{{ question.create_date|datetime }}</div>
-
                     </div>
                 </div>
             </div>
         </div>
+
+        {% if current_user ==question.user %}
+            <div class="my-3">
+                <a href="{{ url_for('question.modify', question_id=question.id) }}"
+                   class="btn btn-sm btn-outline-secondary">수정</a>
+
+                <a href="#" class="delete btn btn-sm btn-outline-secondary"
+                   data-uri="{{ url_for('question.delete', question_id=question.id) }}">삭제</a>
+            </div>
+        {% endif %}
 
         <h5 class="border-bottom my-3 py-2">{{ question.answer_set|length }}개의 답변이 있습니다.</h5>
 
@@ -33,13 +63,30 @@
                     </div>
 
                     <div class="d-flex justify-content-end">
-                        <div class="badge badge-light p-2 text-left">
+                        {% if answer.modify_date %}
+                        <div class="badge badge-light p-2 text-left mx-3">
+                            <div class="mb-2">modified at</div>
+                            <div>{{ answer.modify_date|datetime }}</div>
+                        </div>
+                    {% endif %}
 
+                        <div class="badge badge-light p-2 text-left">
                             <div class="mb-2">{{ answer.user.username }}</div>
                             <div>{{ answer.create_date|datetime }}</div>
-
                         </div>
                     </div>
+
+
+                    {% if current_user ==question.user %}
+                        <div class="my-3">
+                            <a href="{{ url_for('answer.modify', answer_id=answer.id) }}"
+                               class="btn btn-sm btn-outline-secondary">수정</a>
+
+                            <a href="#" class="delete btn btn-sm btn-outline-secondary"
+                               data-uri="{{ url_for('answer.delete', answer_id=answer.id) }}">삭제</a>
+                        </div>
+                    {% endif %}
+
                 </div>
             </div>
 
@@ -55,7 +102,8 @@
 
             <div class="form-group">
 
-                <textarea class="form-control" name="content" id="content" cols="30" rows="15" {% if not current_user %}disabled{% endif %}></textarea>
+                <textarea class="form-control" name="content" id="content" cols="30" rows="15"
+                          {% if not current_user %}disabled{% endif %}></textarea>
             </div>
 
             <input type="submit" value="답변 등록" class="btn btn-primary">
