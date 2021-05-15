@@ -1,8 +1,51 @@
 {% extends "base.html" %}
 
+{% block script %}
+
+    <script>
+        $(document).ready(function () {
+            $('.page-link').on('click', function () {
+                $("#page").val($(this).data('page'));
+                $("#searchForm").submit();
+            });
+
+            $('#btn-search').on('click', function () {
+                $("#kw").val($(".kw").val());
+                $("#page").val(1);
+                $("#searchForm").submit();
+            });
+
+            $('.so').on('change', function () {
+                $("#so").val($(this).val());
+                $("#page").val(1);
+                $("#searchForm").submit();
+            });
+        });
+    </script>
+
+{% endblock %}
+
 {% block content %}
 
     <div class="container my-3">
+
+        <div class="row justify-content-between my-3">
+            <div class="col-2">
+                <select name="" id="" class="form-control so">
+                    <option value="recent" {% if so == 'recent'%}selected{% endif %}>최신순</option>
+                    <option value="recommend" {% if so == 'recommend'%}selected{% endif %}>추천순</option>
+                    <option value="popular" {% if so == 'popular'%}selected{% endif %}>인기순</option>
+                </select>
+            </div>
+
+            <div class="col-4 input-group">
+                <input type="text" class="form-control kw" value = "{{ kw or '' }}">
+                <div class="input-ground-append">
+                    <button class="btn btn-outline-secondary" type="button" id="btn-search">검색</button>
+                </div>
+            </div>
+        </div>
+
         <table class="table">
             <thead>
             <tr class="thead-dark">
@@ -47,7 +90,7 @@
         <ul class="pagination justify-content-center">
             {% if q_list.has_prev %}
                 <li class="page-item">
-                    <a href="?page={{ q_list.prev_num }}" class="page-link">이전</a>
+                    <a data-page="{{ q_list.prev_num }}" class="page-link">이전</a>
                 </li>
             {% else %}
                 <li class="page-item">
@@ -59,7 +102,7 @@
                 {% if page_num %}
                     {% if page_num != q_list.page %}
                         <li class="page-item">
-                            <a href="?page={{ page_num }}" class="page-link">{{ page_num }}</a>
+                            <a data-page="{{ page_num }}" class="page-link">{{ page_num }}</a>
                         </li>
                     {% else %}
                         <li class="page-item active">
@@ -76,7 +119,7 @@
 
             {% if q_list.has_next %}
                 <li class="page-item">
-                    <a href="?page={{ q_list.next_num }}" class="page-link">다음</a>
+                    <a data-page="{{ q_list.next_num }}" class="page-link">다음</a>
                 </li>
             {% else %}
                 <li class="page-item">
@@ -87,5 +130,14 @@
 
         <a href="{{ url_for('question.create') }}" class="btn btn-primary">질문 등록하기</a>
     </div>
+
+    <form action="{{ url_for('question.index') }}" id="searchForm" method="get">
+
+        <input type="hidden" name = 'kw' id = 'kw' value = "{{ kw or '' }}">
+        <input type="hidden" name = 'page' id = 'page' value = "{{ page }}">
+        <input type="hidden" name = 'so' id = 'so' value = "{{ so }}">
+
+    </form>
+
 
 {% endblock %}
