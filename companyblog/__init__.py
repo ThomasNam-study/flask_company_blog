@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flaskext.markdown import Markdown
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -20,6 +21,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 Migrate(app, db)
+
+Markdown(app, extensions=['nl2br', 'fenced_code'])
 
 login_manage = LoginManager()
 
