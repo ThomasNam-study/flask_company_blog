@@ -13,13 +13,11 @@ answer = Blueprint('answer', __name__)
 @answer.route('/create/<int:question_id>', methods=("POST",))
 @login_required
 def create(question_id):
-
     form = AnswerForm()
 
     q = Question.query.get_or_404(question_id)
 
     if form.validate_on_submit():
-
         content = form.content.data
 
         a = Answer(content=content, create_date=datetime.now(), user=current_user)
@@ -27,7 +25,7 @@ def create(question_id):
         q.answer_set.append(a)
         db.session.commit()
 
-        return redirect(url_for('question.detail', question_id=question_id))
+        return redirect(f"{url_for('question.detail', question_id=question_id)}#answer_{a.id}")
 
     return render_template('question/question_detail.html', question=q, form=form)
 
@@ -49,7 +47,7 @@ def modify(answer_id):
             answer.modify_date = datetime.now()
             db.session.commit()
 
-            return redirect(url_for('question.detail', question_id=answer.question.id))
+            return redirect(f"{url_for('question.detail', question_id=answer.question.id)}#answer_{answer.id}")
     else:
         form = AnswerForm(obj=answer)
 

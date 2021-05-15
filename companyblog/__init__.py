@@ -34,6 +34,7 @@ from companyblog.question.views import question
 from companyblog.question.answer_views import answer
 from companyblog.question.filter import format_datetime
 from companyblog.question.comment_views import comment_view
+from companyblog.question.vote_views import vote_view
 
 app.jinja_env.filters['datetime'] = format_datetime
 
@@ -44,3 +45,4 @@ app.register_blueprint(blog_posts)
 app.register_blueprint(question, url_prefix='/question')
 app.register_blueprint(answer, url_prefix='/answer')
 app.register_blueprint(comment_view, url_prefix='/comment')
+app.register_blueprint(vote_view, url_prefix='/vote')

@@ -9,6 +9,12 @@
                     location.href = $(this).data('uri');
                 }
             });
+
+            $('.recommend').on('click', function () {
+                if (confirm("정말로 추천하시겠습니까?")) {
+                    location.href = $(this).data('uri');
+                }
+            });
         });
     </script>
 
@@ -20,52 +26,65 @@
 
         <h2 class="border-bottom py-2">{{ question.subject }}</h2>
 
-        <div class="card my-3">
-            <div class="card-body">
-                <div class="card-text" style="white-space: pre-line;">
-                    {{ question.content }}
+        <div class="row my-3">
+            <div class="col-1">
+                <div class="bg-light text-center p-3 border font-weight-border mb-1">
+                    {{ question.voter|length }}
                 </div>
-
-                <div class="d-flex justify-content-end">
-                    {% if question.modify_date %}
-                        <div class="badge badge-light p-2 text-left mx-3">
-                            <div class="mb-2">modified at</div>
-                            <div>{{ question.modify_date|datetime }}</div>
+                <a href="#" data-uri="{{ url_for('vote.question', question_id=question.id) }}"
+                   class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+            </div>
+            <div class="col-11">
+                <div class="card my-3">
+                    <div class="card-body">
+                        <div class="card-text" style="white-space: pre-line;">
+                            {{ question.content }}
                         </div>
-                    {% endif %}
-                    <div class="badge badge-light p-2 text-left">
-                        <div class="mb-2">{{ question.user.username }}</div>
-                        <div>{{ question.create_date|datetime }}</div>
-                    </div>
-                </div>
 
-                {% if question.comment_set|length > 0 %}
-                    <div class="mt-3">
-                        {% for comment in question.comment_set %}
-                            <div class="comment py-2 text-muted">
-                                <span style="white-space: pre-line">{{ comment.content }}</span>
-                                <span>
+                        <div class="d-flex justify-content-end">
+                            {% if question.modify_date %}
+                                <div class="badge badge-light p-2 text-left mx-3">
+                                    <div class="mb-2">modified at</div>
+                                    <div>{{ question.modify_date|datetime }}</div>
+                                </div>
+                            {% endif %}
+                            <div class="badge badge-light p-2 text-left">
+                                <div class="mb-2">{{ question.user.username }}</div>
+                                <div>{{ question.create_date|datetime }}</div>
+                            </div>
+                        </div>
+
+                        {% if question.comment_set|length > 0 %}
+                            <div class="mt-3">
+                                {% for comment in question.comment_set %}
+                                    <a name="comment_{{ comment.id }}"></a>
+                                    <div class="comment py-2 text-muted">
+                                        <span style="white-space: pre-line">{{ comment.content }}</span>
+                                        <span>
                                     - {{ comment.user.username }}, {{ comment.create_date|datetime }}
 
-                                    {% if comment.modify_date %}
-                                        (수정:{{ comment.modify_date|datetime }})
-                                    {% endif %}
+                                            {% if comment.modify_date %}
+                                                (수정:{{ comment.modify_date|datetime }})
+                                            {% endif %}
                                 </span>
 
-                                {% if current_user == comment.user %}
-                                    <a href="{{ url_for('comment.modify_question', comment_id=comment.id) }}"
-                                       class="small">수정</a>
-                                    <a href="#"
-                                       data-uri="{{ url_for('comment.delete_question', comment_id=comment.id) }}"
-                                       class="small delete">삭제</a>
-                                {% endif %}
+                                        {% if current_user == comment.user %}
+                                            <a href="{{ url_for('comment.modify_question', comment_id=comment.id) }}"
+                                               class="small">수정</a>
+                                            <a href="#"
+                                               data-uri="{{ url_for('comment.delete_question', comment_id=comment.id) }}"
+                                               class="small delete">삭제</a>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
                             </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                        {% endif %}
 
-                <div><a href="{{ url_for('comment.create_question', question_id=question.id) }}" class="small"><small>댓글
-                    추가...</small></a></div>
+                        <div><a href="{{ url_for('comment.create_question', question_id=question.id) }}"
+                                class="small"><small>댓글
+                            추가...</small></a></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -82,68 +101,86 @@
         <h5 class="border-bottom my-3 py-2">{{ question.answer_set|length }}개의 답변이 있습니다.</h5>
 
         {% for answer in question.answer_set %}
+            <a name="answer_{{ answer.id }}"></a>
 
-            <div class="card my-3">
-                <div class="card-body">
-                    <div class="card-text" style="white-space: pre-line;">
-                        {{ answer.content }}
+            <div class="row my-3">
+
+                <div class="col-1">
+                    <div class="bg-light text-center p-3 border font-weight-border mb-1">
+                        {{ answer.voter|length }}
                     </div>
-
-                    <div class="d-flex justify-content-end">
-                        {% if answer.modify_date %}
-                            <div class="badge badge-light p-2 text-left mx-3">
-                                <div class="mb-2">modified at</div>
-                                <div>{{ answer.modify_date|datetime }}</div>
+                    <a href="#" data-uri="{{ url_for('vote.answer', answer_id=answer.id) }}"
+                       class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+                </div>
+                <div class="col-11">
+                    <div class="card my-3">
+                        <div class="card-body">
+                            <div class="card-text" style="white-space: pre-line;">
+                                {{ answer.content }}
                             </div>
-                        {% endif %}
 
-                        <div class="badge badge-light p-2 text-left">
-                            <div class="mb-2">{{ answer.user.username }}</div>
-                            <div>{{ answer.create_date|datetime }}</div>
-                        </div>
-                    </div>
+                            <div class="d-flex justify-content-end">
+                                {% if answer.modify_date %}
+                                    <div class="badge badge-light p-2 text-left mx-3">
+                                        <div class="mb-2">modified at</div>
+                                        <div>{{ answer.modify_date|datetime }}</div>
+                                    </div>
+                                {% endif %}
+
+                                <div class="badge badge-light p-2 text-left">
+                                    <div class="mb-2">{{ answer.user.username }}</div>
+                                    <div>{{ answer.create_date|datetime }}</div>
+                                </div>
+                            </div>
 
 
-                    {% if current_user ==question.user %}
-                        <div class="my-3">
-                            <a href="{{ url_for('answer.modify', answer_id=answer.id) }}"
-                               class="btn btn-sm btn-outline-secondary">수정</a>
+                            {% if current_user ==question.user %}
+                                <div class="my-3">
+                                    <a href="{{ url_for('answer.modify', answer_id=answer.id) }}"
+                                       class="btn btn-sm btn-outline-secondary">수정</a>
 
-                            <a href="#" class="delete btn btn-sm btn-outline-secondary"
-                               data-uri="{{ url_for('answer.delete', answer_id=answer.id) }}">삭제</a>
-                        </div>
-                    {% endif %}
+                                    <a href="#" class="delete btn btn-sm btn-outline-secondary"
+                                       data-uri="{{ url_for('answer.delete', answer_id=answer.id) }}">삭제</a>
+                                </div>
+                            {% endif %}
 
-                {% if answer.comment_set|length > 0 %}
-                    <div class="mt-3">
-                        {% for comment in answer.comment_set %}
-                            <div class="comment py-2 text-muted">
-                                <span style="white-space: pre-line">{{ comment.content }}</span>
-                                <span>
+                            {% if answer.comment_set|length > 0 %}
+                                <div class="mt-3">
+                                    {% for comment in answer.comment_set %}
+                                        <a name="comment_{{ comment.id }}"></a>
+                                        <div class="comment py-2 text-muted">
+                                            <span style="white-space: pre-line">{{ comment.content }}</span>
+                                            <span>
                                     - {{ comment.user.username }}, {{ comment.create_date|datetime }}
 
-                                    {% if comment.modify_date %}
-                                        (수정:{{ comment.modify_date|datetime }})
-                                    {% endif %}
+                                                {% if comment.modify_date %}
+                                                    (수정:{{ comment.modify_date|datetime }})
+                                                {% endif %}
                                 </span>
 
-                                {% if current_user == comment.user %}
-                                    <a href="{{ url_for('comment.modify_answer', comment_id=comment.id) }}"
-                                       class="small">수정</a>
-                                    <a href="#"
-                                       data-uri="{{ url_for('comment.delete_answer', comment_id=comment.id) }}"
-                                       class="small delete">삭제</a>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
+                                            {% if current_user == comment.user %}
+                                                <a href="{{ url_for('comment.modify_answer', comment_id=comment.id) }}"
+                                                   class="small">수정</a>
+                                                <a href="#"
+                                                   data-uri="{{ url_for('comment.delete_answer', comment_id=comment.id) }}"
+                                                   class="small delete">삭제</a>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div><a href="{{ url_for('comment.create_answer', answer_id=answer.id) }}"
+                                    class="small"><small>댓글
+                                추가...</small></a></div>
+
+                        </div>
                     </div>
-                {% endif %}
-
-                <div><a href="{{ url_for('comment.create_answer', answer_id=answer.id) }}" class="small"><small>댓글
-                    추가...</small></a></div>
-
                 </div>
+
             </div>
+
+
 
         {% endfor %}
 
@@ -162,6 +199,8 @@
             </div>
 
             <input type="submit" value="답변 등록" class="btn btn-primary">
+
+            <a href="{{ url_for('question.index') }}" class="btn btn-light">목록으로</a>
         </form>
 
     </div>
